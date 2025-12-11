@@ -1,0 +1,196 @@
+
+
+<!doctype html>
+<html lang="ta">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kamesh — Self Introduction</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#7c3aed;
+      --muted:#9ca3af;
+      --text:#e6eef8;
+      --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Inter",system-ui,Arial;
+      background:linear-gradient(180deg,var(--bg),#071028 70%);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .card{
+      width:100%;
+      max-width:760px;
+      background:linear-gradient(180deg,var(--card),rgba(12,18,30,0.85));
+      border-radius:14px;
+      padding:28px;
+      box-shadow:0 10px 30px rgba(2,6,23,0.6);
+      backdrop-filter:blur(6px);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+
+    header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+
+    .avatar{
+      width:64px;height:64px;border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),#06b6d4);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;font-size:22px;color:white;
+      box-shadow:0 6px 18px rgba(124,58,237,0.18);
+    }
+
+    h1{font-size:20px;margin:0}
+    p.role{margin:0;color:var(--muted);font-size:13px}
+
+    .intro{
+      margin-top:12px;
+      line-height:1.6;
+      font-size:16px;
+      background:var(--glass);
+      padding:18px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.02);
+      min-height:120px;
+      white-space:pre-wrap;
+      font-family:inherit;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      margin-top:16px;
+      align-items:center;
+    }
+
+    button{
+      cursor:pointer;
+      border:0;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:600;
+      background:linear-gradient(90deg,var(--accent),#06b6d4);
+      color:white;
+      box-shadow:0 6px 18px rgba(6,182,212,0.08);
+    }
+
+    button.ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--text);
+      font-weight:500;
+    }
+
+    .small{font-size:13px;padding:8px 10px;border-radius:8px}
+
+    .note{color:var(--muted);font-size:13px;margin-left:auto}
+
+    @media (max-width:520px){
+      .card{padding:18px}
+      .avatar{width:52px;height:52px;font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <header>
+      <div class="avatar" aria-hidden="true">K</div>
+      <div>
+        <h1>Kamesh — Self Introduction</h1>
+        <p class="role">Calm. Focused. Disciplined.</p>
+      </div>
+    </header>
+
+    <section id="display" class="intro" aria-live="polite">
+      <!-- Typing text will appear here -->
+    </section>
+
+    <div class="controls">
+      <button id="playBtn">Play Typing</button>
+      <button id="copyBtn" class="ghost small">Copy Text</button>
+      <button id="fullBtn" class="ghost small">Show Full</button>
+      <span class="note">School name omitted as requested</span>
+    </div>
+  </main>
+
+  <script>
+    // The introduction text (keep school name omitted)
+    const introText = `Good morning everyone.
+My name is Kamesh.
+I usually don't talk too much, but I focus strongly on whatever I do.
+I like working in my own style and improving myself step by step.
+I believe in discipline, confidence, and honesty.
+If I take a task, I complete it without excuses.
+I enjoy learning new things, especially challenging ones.
+In my free time, I like doing my hobbies to stay relaxed and creative.
+I'm looking forward to growing, learning, and proving myself here.
+Thank you.`;
+
+    const display = document.getElementById('display');
+    const playBtn = document.getElementById('playBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const fullBtn = document.getElementById('fullBtn');
+
+    // Typing effect
+    let typing = false;
+    async function typeText(text, speed = 28) {
+      typing = true;
+      display.textContent = '';
+      for (let i = 0; i < text.length; i++) {
+        display.textContent += text[i];
+        await new Promise(r => setTimeout(r, speed));
+      }
+      typing = false;
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (typing) return;
+      typeText(introText);
+    });
+
+    fullBtn.addEventListener('click', () => {
+      if (typing) return;
+      display.textContent = introText;
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(introText);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(()=> copyBtn.textContent = 'Copy Text', 1400);
+      } catch (e) {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = introText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(()=> copyBtn.textContent = 'Copy Text', 1400);
+      }
+    });
+
+    // auto-type a short greeting on load
+    window.addEventListener('DOMContentLoaded', () => {
+      typeText("Good morning everyone.\nMy name is Kamesh.");
+    });
+  </script>
+</body>
+</html>
+
